@@ -46,7 +46,7 @@ def main():
     ]
 
     # Format data for OpenAI prompt
-    prompt = format_data_for_openai(pull_request_diffs, linked_issues)
+    prompt = construct_review_prompt(pull_request_diffs, linked_issues)
 
     # Call OpenAI to generate the review
     generated_review = call_openai(prompt)
@@ -55,7 +55,7 @@ def main():
     relevant_documents = fetch_relevant_documents(linked_issues)
 
     # Format data for OpenAI prompt
-    query = construct_improvement_prompt(pull_request_diffs)
+    query = construct_suggestion_prompt(pull_request_diffs)
 
     # Adding context to our prompt
     template = PromptTemplate(template="{query} Context: {context}", input_variables=["query", "context"])
