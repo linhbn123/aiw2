@@ -19,18 +19,8 @@ def format_data_for_openai(diffs, linked_issues, relevant_documents):
 
     # Construct the prompt with clear instructions for the LLM.
     prompt = (
-        "Review the provided code changes.\n"
-        "-------------------------------------------------------------------------------------\n"
-        "Code changes:\n"
-        f"{combined_diffs}\n"
-        "-------------------------------------------------------------------------------------\n"
-        "Issues which might be closed by the code changes:\n"
-        f"{combined_linked_issues}\n"
-        "-------------------------------------------------------------------------------------\n"
-        "Relevant documents:\n"
-        f"{combined_relevant_documents}\n"
-        "-------------------------------------------------------------------------------------\n"
-        "Your answer should be in Markdown format and should include the following sections:\n"
+        "Check the provided code changes against the requirements in the issues with references to the relevant documents.\n"
+        "Provide your feedback in Markdown format. Your feedback should include the following sections:\n"
         "## Overview of the changes\n"
         "In this section, you summarize the changes using no more than 3 sentences.\n"
         "## Core changes\n"
@@ -43,6 +33,15 @@ def format_data_for_openai(diffs, linked_issues, relevant_documents):
         "In this section, you extract the information from the relevant documents that might help a reviewer review the code changes.\n"
         "## Grading\n"
         "In this section, you give a score from 0 to 10 for the code changes. 10 means the changes have fulfilled all requirements, and the code is good. 0 means the changes are absolute garbage.\n"
+        "-------------------------------------------------------------------------------------\n"
+        "Code changes:\n"
+        f"{combined_diffs}\n"
+        "-------------------------------------------------------------------------------------\n"
+        "Issues which might be closed by the code changes:\n"
+        f"{combined_linked_issues}\n"
+        "-------------------------------------------------------------------------------------\n"
+        "Relevant documents:\n"
+        f"{combined_relevant_documents}\n"
     )
     return prompt
 
