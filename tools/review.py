@@ -66,7 +66,7 @@ def main():
     improvement_suggestions = llm.invoke(prompt_with_context)
 
     # Write a comment on the pull request
-    comment = pull_request.create_issue_comment(f"{UNIQUE_STRING}\n\n{generated_review}\n\n{improvement_suggestions}")
+    comment = pull_request.create_issue_comment(f"{UNIQUE_STRING}\n\n{generated_review}\n\n{improvement_suggestions.content}")
     print("Comment created with ID:", comment.id)
 
 if __name__ == '__main__':
