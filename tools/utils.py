@@ -23,7 +23,7 @@ def format_data_for_openai(diffs, linked_issues):
         "## Core changes\n"
         "In this section, you explain the core part of the changes with references to the issues that might be closed by the code changes (if there are such issues). Use no more than 3 sentences.\n"
         "## How the changes address the issues\n"
-        "In this section, for each issues which might be closed by the code changes, explain how the changes address that issue. Keep the text concise and straight to the point.\n"
+        "In this section, for each issues which might be closed by the code changes, explain how the changes address that issue. Keep the text concise and straight to the point. Always mention the issue number with a link to the issue URL.\n"
         "## How the changes are verified\n"
         "In this section, you focus on the test code changes and see how they help verify that the requirements in the linked issues have been fulfilled. Keep the text concise and straight to the point.\n"
         "## Grading\n"
