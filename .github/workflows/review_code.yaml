@@ -51,8 +51,8 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
           REPO_PATH: ${{ github.repository }} # E.g. owner/name
-          REPO_OWNER: ${{ env.owner }} # E.g. owner
-          REPO_NAME: ${{ env.repo_name }} # E.g. name
+          REPO_OWNER: ${{ env.repository_owner }} # E.g. owner
+          REPO_NAME: ${{ env.repository_name }} # E.g. name
           PR_NUMBER: ${{ env.pull_request_number }}
 
       # Additional step to enable debugging, helps in troublshooting
