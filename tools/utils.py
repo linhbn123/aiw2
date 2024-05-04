@@ -17,9 +17,6 @@ def format_data_for_openai(diffs, linked_issues, relevant_documents):
     # Combine all relevant documents
     combined_relevant_documents = "\n".join(relevant_documents)+"\n\n"
 
-    # Decode the README content
-    readme_content = readme_content.decoded_content.decode('utf-8')
-
     # Construct the prompt with clear instructions for the LLM.
     prompt = (
         "Review the provided code changes.\n"
