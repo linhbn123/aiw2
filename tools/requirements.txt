@@ -72,3 +72,4 @@ unstructured-client==0.22.0
 urllib3==2.2.1
 wrapt==1.16.0
 yarl==1.9.4
+github=1.2.7
