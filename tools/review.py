@@ -1,5 +1,6 @@
 import os
 from github import Github
+from langchain.prompts.prompt import PromptTemplate
 from utils import *
 from constants import *
 from fetch_linked_issues import *
@@ -44,17 +45,28 @@ def main():
         for file in pull_request.get_files()
     ]
 
+    # Format data for OpenAI prompt
+    prompt = format_data_for_openai(pull_request_diffs, linked_issues)
+
+    # Call OpenAI to generate the review
+    generated_review = call_openai(prompt)
+
     # Get the relevant documents
     relevant_documents = fetch_relevant_documents(linked_issues)
 
     # Format data for OpenAI prompt
-    prompt = format_data_for_openai(pull_request_diffs, linked_issues, relevant_documents)
+    query = construct_improvement_prompt(pull_request_diffs)
 
-    # Call OpenAI to generate the review
-    generated_review = call_openai(prompt)
-    
+    # Adding context to our prompt
+    template = PromptTemplate(template="{query} Context: {context}", input_variables=["query", "context"])
+    prompt_with_context = template.invoke({"query": query, "context": relevant_documents})
+
+    # Asking the LLM for a response from our prompt with the provided context
+    llm = ChatOpenAI(temperature=0.7)
+    improvement_suggestions = llm.invoke(prompt_with_context)
+
     # Write a comment on the pull request
-    comment = pull_request.create_issue_comment(f"{UNIQUE_STRING}\n{generated_review}")
+    comment = pull_request.create_issue_comment(f"{UNIQUE_STRING}\n{generated_review}\n##Improvement suggestions\n{improvement_suggestions}")
     print("Comment created with ID:", comment.id)
 
 if __name__ == '__main__':

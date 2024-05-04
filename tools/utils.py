@@ -2,7 +2,7 @@ import os
 from langchain_openai import ChatOpenAI
 from langchain_core.output_parsers.string import StrOutputParser
 
-def format_data_for_openai(diffs, linked_issues, relevant_documents):
+def format_data_for_openai(diffs, linked_issues):
 
     # Combine the changes into a string with clear delineation.
 
@@ -14,12 +14,9 @@ def format_data_for_openai(diffs, linked_issues, relevant_documents):
     # Combine all linked issues
     combined_linked_issues = "\n".join(linked_issues)+"\n\n"
 
-    # Combine all relevant documents
-    combined_relevant_documents = "\n".join(relevant_documents)+"\n\n"
-
     # Construct the prompt with clear instructions for the LLM.
     prompt = (
-        "Check the provided code changes against the requirements in the issues with references to the relevant documents.\n"
+        "Check the provided code changes against the requirements in the issues.\n"
         "Provide your feedback in Markdown format. Your feedback should include the following sections:\n"
         "## Overview of the changes\n"
         "In this section, you summarize the changes using no more than 3 sentences.\n"
@@ -29,8 +26,6 @@ def format_data_for_openai(diffs, linked_issues, relevant_documents):
         "In this section, for each issues which might be closed by the code changes, explain how the changes address that issue. Keep the text concise and straight to the point.\n"
         "## How the changes are verified\n"
         "In this section, you focus on the test code changes and see how they help verify that the requirements in the linked issues have been fulfilled. Keep the text concise and straight to the point.\n"
-        "## References\n"
-        "In this section, you extract the information from the relevant documents that might help a reviewer review the code changes.\n"
         "## Grading\n"
         "In this section, you give a score from 0 to 10 for the code changes. 10 means the changes have fulfilled all requirements, and the code is good. 0 means the changes are absolute garbage.\n"
         "-------------------------------------------------------------------------------------\n"
@@ -40,8 +35,23 @@ def format_data_for_openai(diffs, linked_issues, relevant_documents):
         "Issues which might be closed by the code changes:\n"
         f"{combined_linked_issues}\n"
         "-------------------------------------------------------------------------------------\n"
-        "Relevant documents:\n"
-        f"{combined_relevant_documents}\n"
+    )
+    return prompt
+
+def construct_improvement_prompt(diffs):
+
+    # Combine the changes into a string with clear delineation.
+
+    combined_diffs = "\n".join([
+        f"File: {file['filename']}\nDiff: \n{file['patch']}\n"
+        for file in diffs
+    ])+"\n\n"
+
+    # Construct the prompt with clear instructions for the LLM.
+    prompt = (
+        "Check the provided code changes suggest how they can be improved.\n"
+        "Code changes:\n"
+        f"{combined_diffs}\n"
     )
     return prompt
 
