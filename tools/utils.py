@@ -23,7 +23,7 @@ def format_data_for_openai(diffs, linked_issues):
         "## Core changes\n"
         "In this section, you explain the core part of the changes with references to the issues that might be closed by the code changes (if there are such issues). Use no more than 3 sentences.\n"
         "## How the changes address the issues\n"
-        "In this section, for each issues which might be closed by the code changes, explain how the changes address that issue. Keep the text concise and straight to the point. If you mention the issue number, link it to the associated issue URL.\n"
+        "In this section, for each issues which might be closed by the code changes, explain how the changes address that issue. Keep the text concise and straight to the point. If there is only 1 issue which might be closed by the code changes, do not mention or link to that issue.\n"
         "## Grading\n"
         "In this section, you give a score from 0 to 10 for the code changes. 10 means the changes have fulfilled all requirements, and the code is good. 0 means the changes are absolute garbage.\n"
         "-------------------------------------------------------------------------------------\n"
