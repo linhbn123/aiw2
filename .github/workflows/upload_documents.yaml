@@ -1,0 +1,53 @@
+name: Upload documents to Pinecone Index
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ main ]
+    paths:
+      - 'documents/**'
+
+jobs:
+  upload-documents:
+    name: Upload documents to Pinecone Index
+    runs-on: ubuntu-latest
+
+    steps:
+      # Check out the repo to access its content
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # Set up Python using the latest stable version
+      - name: Setup Python
+        uses: actions/setup-python@v3
+        with:
+          python-version: '3.12'
+
+      # Install Python dependencies
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r tools/requirements.txt
+
+      - name: Get PR info
+        id: pr_info
+        run: |
+          pr_num=$(jq -r '.pull_request.number' "$GITHUB_EVENT_PATH")
+          commit_sha=$(jq -r '.pull_request.merge_commit_sha' "$GITHUB_EVENT_PATH")
+          echo "pull_request_number=$pr_num" >> $GITHUB_ENV
+          echo "commit_sha=$commit_sha" >> $GITHUB_ENV
+
+      - name: Upload documents to Pinecone Index
+        run: |
+          python tools/upload.py
+        env:
+          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          REPO_PATH: ${{ github.repository }}
+          PR_NUMBER: ${{ env.pull_request_number }}
+          COMMIT_SHA: ${{ env.commit_sha }}
+
+      # Additional step to enable debugging, helps in troublshooting
+      - name: Enable Debug Logging
+        run: |
+          echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
