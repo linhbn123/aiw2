@@ -1,14 +1,16 @@
-name: README Update Automation
+name: Review code changes
 
 on:
   pull_request:
-    types: [closed]
+    types: [opened, synchronize, reopened, ready_for_review]
+    paths-ignore:
+      - 'documents/**'
 
 jobs:
-  update-readme:
-    name: Update README after PR merge
+  review-code-changes:
+    if: github.event.pull_request.draft == false
+    name: Review code changes
     runs-on: ubuntu-latest
-    if: github.event.pull_request.merged == true
 
     steps:
       # Check out the repo to access its content
@@ -31,9 +33,7 @@ jobs:
         id: pr_info
         run: |
           pr_num=$(jq -r '.pull_request.number' "$GITHUB_EVENT_PATH")
-          commit_sha=$(jq -r '.pull_request.merge_commit_sha' "$GITHUB_EVENT_PATH")
           echo "pull_request_number=$pr_num" >> $GITHUB_ENV
-          echo "commit_sha=$commit_sha" >> $GITHUB_ENV
 
       - name: Extract repository owner and name
         env:
@@ -49,11 +49,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PINECONE_API_KEY: ${{ secrets.PINECONE_API_KEY }}
           REPO_PATH: ${{ github.repository }} # E.g. owner/name
           REPO_OWNER: ${{ env.owner }} # E.g. owner
           REPO_NAME: ${{ env.repo_name }} # E.g. name
           PR_NUMBER: ${{ env.pull_request_number }}
-          COMMIT_SHA: ${{ env.commit_sha }}
 
       # Additional step to enable debugging, helps in troublshooting
       - name: Enable Debug Logging
