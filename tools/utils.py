@@ -50,6 +50,10 @@ def construct_improvement_prompt(diffs):
     # Construct the prompt with clear instructions for the LLM.
     prompt = (
         "Check the provided code changes suggest how they can be improved.\n"
+        "Provide your feedback in Markdown format. Your feedback should include the following sections:\n"
+        "## Improvement suggestions\n"
+        "In this section, you suggest a few ideas to improve the quality of the code.\n"
+        "-------------------------------------------------------------------------------------\n"
         "Code changes:\n"
         f"{combined_diffs}\n"
     )
